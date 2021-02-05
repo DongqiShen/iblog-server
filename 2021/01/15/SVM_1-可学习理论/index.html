@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SVM_1：可学习理论</title>
+  <meta name='description' content='This is a freeland.'>
+
+  <link rel="canonical" href="/2021/01/15/SVM_1-%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/">
+  <link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+  <!-- Ionicons -->
+  <link href="https://unpkg.com/ionicons@4.2.2/dist/css/ionicons.min.css" rel="stylesheet">
+    
+  <style>
+  
+  .text-left{text-align:left}.text-right{text-align:right}.text-center{text-align:center}.text-justify{text-align:justify}.block{display:block}.inline-block{display:inline-block}.inline{display:inline}.vertical-center{display:flex;align-items:center;justify-content:center}.show{display:block}.hide{display:none}.invisible{visibility:hidden}.float-left{float:left}.float-right{float:right}.no-padding{padding:0}.no-margin{margin:0}.list-reset{list-style-type:none;margin:0;padding:0}.clearfix::after,.clearfix ::before{content:"";display:table;clear:both}.screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px;word-wrap:normal !important}/*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}h1{font-size:2em;margin:0.67em 0}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}img{border-style:none}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,[type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{padding:0.35em 0.75em 0.625em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details{display:block}summary{display:list-item}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,p,blockquote,pre,dl,dd,ol,ul,fieldset,legend,figure,hr{margin:0;padding:0}li>ul,li>ol{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}h1,h2,h3,h4,h5,h6,ul,ol,dl,blockquote,p,address,hr,table,fieldset,figure,pre{margin-bottom:20px}ul,ol,dd{margin-left:20px}.highlight{background:#f8f8f8}.highlighter-rouge .highlight{background:#eef}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}.container{max-width:1200px;padding-left:20px;padding-right:20px;margin:0 auto}.container-full{max-width:100%;padding-left:20px;padding-right:20px;margin:0 auto}.row{display:flex;flex-wrap:wrap;flex:0 1 auto;flex-direction:row;box-sizing:border-box;margin-left:-20px;margin-right:-20px}.col{padding-left:20px;padding-right:20px}[class^="col-"]{flex:auto}.col-0{width:0%}.col-1{width:8.3333333333%}.col-2{width:16.6666666667%}.col-3{width:25%}.col-4{width:33.3333333333%}.col-5{width:41.6666666667%}.col-6{width:50%}.col-7{width:58.3333333333%}.col-8{width:66.6666666667%}.col-9{width:75%}.col-10{width:83.3333333333%}.col-11{width:91.6666666667%}.col-12{width:100%}.push-0{margin-left:0%}.push-1{margin-left:8.3333333333%}.push-2{margin-left:16.6666666667%}.push-3{margin-left:25%}.push-4{margin-left:33.3333333333%}.push-5{margin-left:41.6666666667%}.push-6{margin-left:50%}.push-7{margin-left:58.3333333333%}.push-8{margin-left:66.6666666667%}.push-9{margin-left:75%}.push-10{margin-left:83.3333333333%}.push-11{margin-left:91.6666666667%}.push-12{margin-left:100%}.pull-0{margin-right:0%}.pull-1{margin-right:8.3333333333%}.pull-2{margin-right:16.6666666667%}.pull-3{margin-right:25%}.pull-4{margin-right:33.3333333333%}.pull-5{margin-right:41.6666666667%}.pull-6{margin-right:50%}.pull-7{margin-right:58.3333333333%}.pull-8{margin-right:66.6666666667%}.pull-9{margin-right:75%}.pull-10{margin-right:83.3333333333%}.pull-11{margin-right:91.6666666667%}.pull-12{margin-right:100%}@media (max-width: 992px){.col-d-0{width:0%}.col-d-1{width:8.3333333333%}.col-d-2{width:16.6666666667%}.col-d-3{width:25%}.col-d-4{width:33.3333333333%}.col-d-5{width:41.6666666667%}.col-d-6{width:50%}.col-d-7{width:58.3333333333%}.col-d-8{width:66.6666666667%}.col-d-9{width:75%}.col-d-10{width:83.3333333333%}.col-d-11{width:91.6666666667%}.col-d-12{width:100%}.push-d-0{margin-left:0%}.push-d-1{margin-left:8.3333333333%}.push-d-2{margin-left:16.6666666667%}.push-d-3{margin-left:25%}.push-d-4{margin-left:33.3333333333%}.push-d-5{margin-left:41.6666666667%}.push-d-6{margin-left:50%}.push-d-7{margin-left:58.3333333333%}.push-d-8{margin-left:66.6666666667%}.push-d-9{margin-left:75%}.push-d-10{margin-left:83.3333333333%}.push-d-11{margin-left:91.6666666667%}.push-d-12{margin-left:100%}.pull-d-0{margin-right:0%}.pull-d-1{margin-right:8.3333333333%}.pull-d-2{margin-right:16.6666666667%}.pull-d-3{margin-right:25%}.pull-d-4{margin-right:33.3333333333%}.pull-d-5{margin-right:41.6666666667%}.pull-d-6{margin-right:50%}.pull-d-7{margin-right:58.3333333333%}.pull-d-8{margin-right:66.6666666667%}.pull-d-9{margin-right:75%}.pull-d-10{margin-right:83.3333333333%}.pull-d-11{margin-right:91.6666666667%}.pull-d-12{margin-right:100%}}@media (max-width: 768px){.col-t-0{width:0%}.col-t-1{width:8.3333333333%}.col-t-2{width:16.6666666667%}.col-t-3{width:25%}.col-t-4{width:33.3333333333%}.col-t-5{width:41.6666666667%}.col-t-6{width:50%}.col-t-7{width:58.3333333333%}.col-t-8{width:66.6666666667%}.col-t-9{width:75%}.col-t-10{width:83.3333333333%}.col-t-11{width:91.6666666667%}.col-t-12{width:100%}.push-t-0{margin-left:0%}.push-t-1{margin-left:8.3333333333%}.push-t-2{margin-left:16.6666666667%}.push-t-3{margin-left:25%}.push-t-4{margin-left:33.3333333333%}.push-t-5{margin-left:41.6666666667%}.push-t-6{margin-left:50%}.push-t-7{margin-left:58.3333333333%}.push-t-8{margin-left:66.6666666667%}.push-t-9{margin-left:75%}.push-t-10{margin-left:83.3333333333%}.push-t-11{margin-left:91.6666666667%}.push-t-12{margin-left:100%}.pull-t-0{margin-right:0%}.pull-t-1{margin-right:8.3333333333%}.pull-t-2{margin-right:16.6666666667%}.pull-t-3{margin-right:25%}.pull-t-4{margin-right:33.3333333333%}.pull-t-5{margin-right:41.6666666667%}.pull-t-6{margin-right:50%}.pull-t-7{margin-right:58.3333333333%}.pull-t-8{margin-right:66.6666666667%}.pull-t-9{margin-right:75%}.pull-t-10{margin-right:83.3333333333%}.pull-t-11{margin-right:91.6666666667%}.pull-t-12{margin-right:100%}}@media (max-width: 576px){.col-m-0{width:0%}.col-m-1{width:8.3333333333%}.col-m-2{width:16.6666666667%}.col-m-3{width:25%}.col-m-4{width:33.3333333333%}.col-m-5{width:41.6666666667%}.col-m-6{width:50%}.col-m-7{width:58.3333333333%}.col-m-8{width:66.6666666667%}.col-m-9{width:75%}.col-m-10{width:83.3333333333%}.col-m-11{width:91.6666666667%}.col-m-12{width:100%}.push-m-0{margin-left:0%}.push-m-1{margin-left:8.3333333333%}.push-m-2{margin-left:16.6666666667%}.push-m-3{margin-left:25%}.push-m-4{margin-left:33.3333333333%}.push-m-5{margin-left:41.6666666667%}.push-m-6{margin-left:50%}.push-m-7{margin-left:58.3333333333%}.push-m-8{margin-left:66.6666666667%}.push-m-9{margin-left:75%}.push-m-10{margin-left:83.3333333333%}.push-m-11{margin-left:91.6666666667%}.push-m-12{margin-left:100%}.pull-m-0{margin-right:0%}.pull-m-1{margin-right:8.3333333333%}.pull-m-2{margin-right:16.6666666667%}.pull-m-3{margin-right:25%}.pull-m-4{margin-right:33.3333333333%}.pull-m-5{margin-right:41.6666666667%}.pull-m-6{margin-right:50%}.pull-m-7{margin-right:58.3333333333%}.pull-m-8{margin-right:66.6666666667%}.pull-m-9{margin-right:75%}.pull-m-10{margin-right:83.3333333333%}.pull-m-11{margin-right:91.6666666667%}.pull-m-12{margin-right:100%}}@media (max-width: 992px){.col-d-0{width:0%}.col-d-1{width:8.3333333333%}.col-d-2{width:16.6666666667%}.col-d-3{width:25%}.col-d-4{width:33.3333333333%}.col-d-5{width:41.6666666667%}.col-d-6{width:50%}.col-d-7{width:58.3333333333%}.col-d-8{width:66.6666666667%}.col-d-9{width:75%}.col-d-10{width:83.3333333333%}.col-d-11{width:91.6666666667%}.col-d-12{width:100%}.push-d-0{margin-left:0%}.push-d-1{margin-left:8.3333333333%}.push-d-2{margin-left:16.6666666667%}.push-d-3{margin-left:25%}.push-d-4{margin-left:33.3333333333%}.push-d-5{margin-left:41.6666666667%}.push-d-6{margin-left:50%}.push-d-7{margin-left:58.3333333333%}.push-d-8{margin-left:66.6666666667%}.push-d-9{margin-left:75%}.push-d-10{margin-left:83.3333333333%}.push-d-11{margin-left:91.6666666667%}.push-d-12{margin-left:100%}.pull-d-0{margin-right:0%}.pull-d-1{margin-right:8.3333333333%}.pull-d-2{margin-right:16.6666666667%}.pull-d-3{margin-right:25%}.pull-d-4{margin-right:33.3333333333%}.pull-d-5{margin-right:41.6666666667%}.pull-d-6{margin-right:50%}.pull-d-7{margin-right:58.3333333333%}.pull-d-8{margin-right:66.6666666667%}.pull-d-9{margin-right:75%}.pull-d-10{margin-right:83.3333333333%}.pull-d-11{margin-right:91.6666666667%}.pull-d-12{margin-right:100%}}@media (max-width: 768px){.col-t-0{width:0%}.col-t-1{width:8.3333333333%}.col-t-2{width:16.6666666667%}.col-t-3{width:25%}.col-t-4{width:33.3333333333%}.col-t-5{width:41.6666666667%}.col-t-6{width:50%}.col-t-7{width:58.3333333333%}.col-t-8{width:66.6666666667%}.col-t-9{width:75%}.col-t-10{width:83.3333333333%}.col-t-11{width:91.6666666667%}.col-t-12{width:100%}.push-t-0{margin-left:0%}.push-t-1{margin-left:8.3333333333%}.push-t-2{margin-left:16.6666666667%}.push-t-3{margin-left:25%}.push-t-4{margin-left:33.3333333333%}.push-t-5{margin-left:41.6666666667%}.push-t-6{margin-left:50%}.push-t-7{margin-left:58.3333333333%}.push-t-8{margin-left:66.6666666667%}.push-t-9{margin-left:75%}.push-t-10{margin-left:83.3333333333%}.push-t-11{margin-left:91.6666666667%}.push-t-12{margin-left:100%}.pull-t-0{margin-right:0%}.pull-t-1{margin-right:8.3333333333%}.pull-t-2{margin-right:16.6666666667%}.pull-t-3{margin-right:25%}.pull-t-4{margin-right:33.3333333333%}.pull-t-5{margin-right:41.6666666667%}.pull-t-6{margin-right:50%}.pull-t-7{margin-right:58.3333333333%}.pull-t-8{margin-right:66.6666666667%}.pull-t-9{margin-right:75%}.pull-t-10{margin-right:83.3333333333%}.pull-t-11{margin-right:91.6666666667%}.pull-t-12{margin-right:100%}}@media (max-width: 576px){.col-m-0{width:0%}.col-m-1{width:8.3333333333%}.col-m-2{width:16.6666666667%}.col-m-3{width:25%}.col-m-4{width:33.3333333333%}.col-m-5{width:41.6666666667%}.col-m-6{width:50%}.col-m-7{width:58.3333333333%}.col-m-8{width:66.6666666667%}.col-m-9{width:75%}.col-m-10{width:83.3333333333%}.col-m-11{width:91.6666666667%}.col-m-12{width:100%}.push-m-0{margin-left:0%}.push-m-1{margin-left:8.3333333333%}.push-m-2{margin-left:16.6666666667%}.push-m-3{margin-left:25%}.push-m-4{margin-left:33.3333333333%}.push-m-5{margin-left:41.6666666667%}.push-m-6{margin-left:50%}.push-m-7{margin-left:58.3333333333%}.push-m-8{margin-left:66.6666666667%}.push-m-9{margin-left:75%}.push-m-10{margin-left:83.3333333333%}.push-m-11{margin-left:91.6666666667%}.push-m-12{margin-left:100%}.pull-m-0{margin-right:0%}.pull-m-1{margin-right:8.3333333333%}.pull-m-2{margin-right:16.6666666667%}.pull-m-3{margin-right:25%}.pull-m-4{margin-right:33.3333333333%}.pull-m-5{margin-right:41.6666666667%}.pull-m-6{margin-right:50%}.pull-m-7{margin-right:58.3333333333%}.pull-m-8{margin-right:66.6666666667%}.pull-m-9{margin-right:75%}.pull-m-10{margin-right:83.3333333333%}.pull-m-11{margin-right:91.6666666667%}.pull-m-12{margin-right:100%}}@media (max-width: 992px){.col-d-0{width:0%}.col-d-1{width:8.3333333333%}.col-d-2{width:16.6666666667%}.col-d-3{width:25%}.col-d-4{width:33.3333333333%}.col-d-5{width:41.6666666667%}.col-d-6{width:50%}.col-d-7{width:58.3333333333%}.col-d-8{width:66.6666666667%}.col-d-9{width:75%}.col-d-10{width:83.3333333333%}.col-d-11{width:91.6666666667%}.col-d-12{width:100%}.push-d-0{margin-left:0%}.push-d-1{margin-left:8.3333333333%}.push-d-2{margin-left:16.6666666667%}.push-d-3{margin-left:25%}.push-d-4{margin-left:33.3333333333%}.push-d-5{margin-left:41.6666666667%}.push-d-6{margin-left:50%}.push-d-7{margin-left:58.3333333333%}.push-d-8{margin-left:66.6666666667%}.push-d-9{margin-left:75%}.push-d-10{margin-left:83.3333333333%}.push-d-11{margin-left:91.6666666667%}.push-d-12{margin-left:100%}.pull-d-0{margin-right:0%}.pull-d-1{margin-right:8.3333333333%}.pull-d-2{margin-right:16.6666666667%}.pull-d-3{margin-right:25%}.pull-d-4{margin-right:33.3333333333%}.pull-d-5{margin-right:41.6666666667%}.pull-d-6{margin-right:50%}.pull-d-7{margin-right:58.3333333333%}.pull-d-8{margin-right:66.6666666667%}.pull-d-9{margin-right:75%}.pull-d-10{margin-right:83.3333333333%}.pull-d-11{margin-right:91.6666666667%}.pull-d-12{margin-right:100%}}@media (max-width: 768px){.col-t-0{width:0%}.col-t-1{width:8.3333333333%}.col-t-2{width:16.6666666667%}.col-t-3{width:25%}.col-t-4{width:33.3333333333%}.col-t-5{width:41.6666666667%}.col-t-6{width:50%}.col-t-7{width:58.3333333333%}.col-t-8{width:66.6666666667%}.col-t-9{width:75%}.col-t-10{width:83.3333333333%}.col-t-11{width:91.6666666667%}.col-t-12{width:100%}.push-t-0{margin-left:0%}.push-t-1{margin-left:8.3333333333%}.push-t-2{margin-left:16.6666666667%}.push-t-3{margin-left:25%}.push-t-4{margin-left:33.3333333333%}.push-t-5{margin-left:41.6666666667%}.push-t-6{margin-left:50%}.push-t-7{margin-left:58.3333333333%}.push-t-8{margin-left:66.6666666667%}.push-t-9{margin-left:75%}.push-t-10{margin-left:83.3333333333%}.push-t-11{margin-left:91.6666666667%}.push-t-12{margin-left:100%}.pull-t-0{margin-right:0%}.pull-t-1{margin-right:8.3333333333%}.pull-t-2{margin-right:16.6666666667%}.pull-t-3{margin-right:25%}.pull-t-4{margin-right:33.3333333333%}.pull-t-5{margin-right:41.6666666667%}.pull-t-6{margin-right:50%}.pull-t-7{margin-right:58.3333333333%}.pull-t-8{margin-right:66.6666666667%}.pull-t-9{margin-right:75%}.pull-t-10{margin-right:83.3333333333%}.pull-t-11{margin-right:91.6666666667%}.pull-t-12{margin-right:100%}}@media (max-width: 576px){.col-m-0{width:0%}.col-m-1{width:8.3333333333%}.col-m-2{width:16.6666666667%}.col-m-3{width:25%}.col-m-4{width:33.3333333333%}.col-m-5{width:41.6666666667%}.col-m-6{width:50%}.col-m-7{width:58.3333333333%}.col-m-8{width:66.6666666667%}.col-m-9{width:75%}.col-m-10{width:83.3333333333%}.col-m-11{width:91.6666666667%}.col-m-12{width:100%}.push-m-0{margin-left:0%}.push-m-1{margin-left:8.3333333333%}.push-m-2{margin-left:16.6666666667%}.push-m-3{margin-left:25%}.push-m-4{margin-left:33.3333333333%}.push-m-5{margin-left:41.6666666667%}.push-m-6{margin-left:50%}.push-m-7{margin-left:58.3333333333%}.push-m-8{margin-left:66.6666666667%}.push-m-9{margin-left:75%}.push-m-10{margin-left:83.3333333333%}.push-m-11{margin-left:91.6666666667%}.push-m-12{margin-left:100%}.pull-m-0{margin-right:0%}.pull-m-1{margin-right:8.3333333333%}.pull-m-2{margin-right:16.6666666667%}.pull-m-3{margin-right:25%}.pull-m-4{margin-right:33.3333333333%}.pull-m-5{margin-right:41.6666666667%}.pull-m-6{margin-right:50%}.pull-m-7{margin-right:58.3333333333%}.pull-m-8{margin-right:66.6666666667%}.pull-m-9{margin-right:75%}.pull-m-10{margin-right:83.3333333333%}.pull-m-11{margin-right:91.6666666667%}.pull-m-12{margin-right:100%}}img[data-action="zoom"]{cursor:pointer;cursor:-webkit-zoom-in;cursor:-moz-zoom-in}.zoom-img,.zoom-img-wrap{position:relative;z-index:666;-webkit-transition:all 300ms;-o-transition:all 300ms;transition:all 300ms}img.zoom-img{cursor:pointer;cursor:-webkit-zoom-out;cursor:-moz-zoom-out}.zoom-overlay{z-index:420;background:#fff;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0;-webkit-transition:opacity 300ms;-o-transition:opacity 300ms;transition:opacity 300ms}.zoom-overlay-open .zoom-overlay{opacity:1}.zoom-overlay-open,.zoom-overlay-transitioning{cursor:default}*,*::after,*::before{box-sizing:border-box}body{font-family:"Roboto",Helvetica Neue,Helvetica,Arial,sans-serif;font-size:16px;line-height:26px;color:#393e46;background-color:#fff;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body input,body textarea{border:1px solid #e6eef0;outline:none}body input:focus:required:invalid,body textarea:focus:required:invalid{border-color:#e02f40}body input:required:valid,body textarea:required:valid{border-color:#34a74e}::placeholder{color:#666}*::selection{color:#fff;background-color:#393e46}h1,h2,h3,h4,h5,h6{font-family:"Roboto",Helvetica Neue,Helvetica,Arial,sans-serif;line-height:initial;letter-spacing:0.5px}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}blockquote{margin:30px -100px;font-size:28px;line-height:45px;letter-spacing:0.5px;font-style:normal;text-align:center}@media only screen and (max-width: 768px){blockquote{margin:30px 0;font-size:24px;line-height:38px}}pre{overflow:auto;padding:15px;margin-bottom:0;font-size:14px;white-space:pre-wrap;word-wrap:break-word;word-break:break-all}img,.zoom-img-wrap{max-width:100%;height:auto;vertical-align:middle}img+em,.zoom-img-wrap+em{text-align:center;display:block;font-style:normal;font-weight:normal;font-size:14px;color:#bbb}a{text-decoration:none;color:#f6b141;transition:all 0.35s}a:hover{color:#f49d10}a:active{color:#c87f09}hr{display:block;height:1px;margin:40px 0;border:0;background:#e6eef0}.top{position:fixed;bottom:40px;right:-100px;z-index:1;width:35px;height:35px;text-align:center;line-height:35px;background-color:#393e46;color:#fff;cursor:pointer;transition:all .25s ease}.top.is-active{right:40px}.top:hover{background-color:#000}@media only screen and (max-width: 768px){.top{bottom:25px}.top.is-active{right:30px}}.header{position:relative;height:100px}.header .header__overlay{position:fixed;top:0;right:0;bottom:0;left:0;z-index:10;background-color:rgba(17,17,17,0.7);cursor:pointer;opacity:0;visibility:hidden;transition:all 0.5s ease}@media only screen and (max-width: 992px){.header .header__overlay.is-visible{opacity:1;visibility:visible}}.logo{position:absolute;top:50%;left:0;transform:translateY(-50%)}.logo .logo__link{font-size:30px;font-weight:700;letter-spacing:0.5px;color:#393e46;text-decoration:none}.logo .logo__link:hover{color:#000}.logo .logo__image{max-height:50px}.main-nav{position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)}.main-nav .nav-icon__close{display:none;font-size:24px;text-align:right;cursor:pointer}.main-nav .nav-icon__close:hover{color:#000}.main-nav .nav__title{display:none}.main-nav .nav__list{white-space:nowrap}.main-nav .nav__list .nav__item{display:inline-block}.main-nav .nav__list .nav__item .nav__link{display:inline-block;padding:10px 30px;font-size:14px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#393e46}.main-nav .nav__list .nav__item .nav__link:hover{color:#000}@media only screen and (max-width: 992px){.main-nav{position:fixed;top:0;left:inherit;right:-300px;bottom:0;transform:none;z-index:100;width:300px;height:100vh;padding:40px 30px 30px;transition:right 0.5s cubic-bezier(0.7, 0.4, 0, 1);background:#fff}.main-nav.is-open{right:0}.main-nav .nav-icon__close{display:block}.main-nav .nav__title{display:block;padding-left:30px;padding-bottom:7px;margin-bottom:10px;color:#bbb;border-bottom:1px solid #e6eef0}.main-nav .nav__list .nav__item{display:block}}.nav-buttons{position:absolute;top:50%;right:0;transform:translateY(-50%);font-size:21px}.nav-buttons .nav__icon{color:#393e46;cursor:pointer}.nav-buttons .nav__icon:hover{color:#000}.nav-buttons .nav__icon-menu{display:none;margin-right:10px}.nav-buttons .nav__icon-menu:hover{color:#000}@media only screen and (max-width: 992px){.nav-buttons .nav__icon-menu{display:inline-block}}.hero{padding:80px 0;margin-bottom:80px;background:#f5f5f5}.hero .last-item{display:flex}.hero .hero__content{display:flex;flex-direction:column;justify-content:center;width:100%;padding:0 40px 0 0}.hero .hero__content .hero__title{font-size:38px;font-weight:normal}.hero .hero__content .hero__subtitle{font-size:18px;line-height:32px;letter-spacing:0.5px}.hero .hero__content .hero__social{display:flex}.hero .hero__content .hero__social-title{font-weight:700}.hero .hero__image img{box-shadow:0 1px 4px rgba(0,0,0,0.15)}@media only screen and (max-width: 992px){.hero .hero__content{padding:0}.hero .hero__content .hero__subtitle{font-size:16px;line-height:28px}}@media only screen and (max-width: 768px){.hero{margin-bottom:40px}.hero .last-item{order:1}.hero .hero__content .hero__title{margin-bottom:20px;font-size:27px}.hero .hero__image{margin-bottom:20px}.hero .hero__image img{box-shadow:none}}@media only screen and (max-width: 576px){.hero{padding:40px 0}}.search{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;transform:scale(0.95);opacity:0;background:#fff;transition:all 250ms ease}.search.is-visible{transform:scale(1);z-index:100;opacity:1;transition:all 250ms ease}.search__box{width:50%;margin:0 auto;padding-top:100px}@media only screen and (max-width: 992px){.search__box{width:70%;padding-top:70px}}@media only screen and (max-width: 576px){.search__box{width:100%;padding-top:30px}}.search__group{margin-bottom:50px}.search__group .search__close{margin-bottom:30px;font-size:27px;text-align:right;cursor:pointer}.search__group .search__close:hover{color:#000}.search__group .search__text{width:100%;padding:20px 20px 20px 30px;letter-spacing:0.5px;border-radius:30px;border:1px solid #f8f8f8;color:#393e46;background:#f8f8f8}.search__group .search__text::placeholder{letter-spacing:0.5px;color:rgba(57,62,70,0.7)}.search-results-list{height:65vh;margin:0;padding:0 20px;list-style:decimal;overflow:auto;white-space:normal}.search-results-list .search-results__item{margin-bottom:10px;padding-left:10px;padding-bottom:10px;font-weight:700;border-bottom:1px solid #f5efef}.search-results-list .search-results__item:first-child{padding-top:20px;border-top:1px solid #f5efef}.search-results-list .search-results__link{font-size:18px;font-weight:700;letter-spacing:0.5px;color:#393e46}.search-results-list .search-results__link:hover{color:#000}.search-results-list .search-results__date{font-size:12px;color:#bbb}.search-results-list .no-results{list-style:none;padding:20px 0;font-size:18px;font-weight:700;letter-spacing:0.5px;border-top:1px solid #f5efef;border-bottom:1px solid #f5efef}.contact .contact__list li{margin-left:15px;display:inline-block}.contact .contact__list li a{font-size:18px;color:#bbb}.contact .contact__list li a:hover{color:#393e46}.pagination{margin:20px 0 40px;padding:40px 0;text-align:center}@media only screen and (max-width: 576px){.pagination{margin:0 0 20px}}.pagination__list{display:flex;justify-content:space-between;align-items:center}.pagination__list .next-link,.pagination__list .previous-link,.pagination__list .disabled{display:inline-block;width:140px;height:50px;line-height:50px;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:all .35s;box-shadow:0 1px 3px 0 rgba(0,0,0,0.15);background:#fff}.pagination__list .next-link,.pagination__list .previous-link{color:#393e46}.pagination__list .next-link:hover,.pagination__list .previous-link:hover{color:#000}.pagination__list .disabled{color:#bbb;cursor:not-allowed}.pagination__list .counter-box a,.pagination__list .counter-box span{padding:0 5px;font-size:15px;color:#393e46}.pagination__list .counter-box .active-link{font-weight:700}@media only screen and (max-width: 576px){.pagination__list{flex-direction:column}.pagination__list .next-link,.pagination__list .previous-link,.pagination__list .disabled{margin:10px 0}}.subscribe{width:430px;max-width:100%;margin:0 auto 80px;text-align:center}.subscribe .subscribe__title{margin-bottom:10px;font-size:37px;line-height:57px}.subscribe .subscribe__subtitle{margin-bottom:30px;font-size:17px;line-height:27px}.subscribe .subscribe-form .subscribe-group{margin-bottom:30px}.subscribe .subscribe-form .subscribe__email{width:100%;padding:17px;font-size:16px;text-align:center;outline:none;border:none;border-bottom:3px solid #e6eef0}.subscribe .subscribe-form .subscribe__email::placeholder{font-size:18px;color:#e6eef0}.subscribe .subscribe-form .subscribe__button{width:127px;height:57px;font-size:14px;font-weight:700;letter-spacing:0.5px;border-radius:30px;border:none;background:#e6eef0;cursor:pointer;transition:all .35s}.subscribe .subscribe-form .subscribe__button:hover{color:#fff;background:#393e46}@media only screen and (max-width: 576px){.subscribe{margin:0 auto 40px}.subscribe .subscribe__subtitle{font-size:16px;line-height:26px}}.instagram-box{position:relative;margin:0 0 80px}.instagram-box .istagram-contact{position:absolute;left:50%;top:50%;transform:translate(-50%, -50%);z-index:1;display:block;padding:8px 15px;font-size:14px;letter-spacing:0.5px;border-radius:3px;box-shadow:0 4px 4px 0 rgba(0,0,0,0.15);color:#393e46;background:#fff}.instagram-box .istagram-contact:hover{color:#000}.instagram-box .instagram .instagram-item{width:16.6%;display:inline-block;transition:all .35s}.instagram-box .instagram .instagram-item:hover{opacity:0.9}@media only screen and (max-width: 768px){.instagram-box .instagram .instagram-item{width:33.3%}}@media only screen and (max-width: 576px){.instagram-box{margin:0 0 40px}}.footer{position:relative;padding:80px 0 40px;text-align:center;border-top:1px solid #e6eef0;background:#f5f5f5}.footer .contact{margin-bottom:15px}.footer .copyright a{color:#393e46}.footer .copyright a:hover{color:#f6b141}@media only screen and (max-width: 576px){.footer{padding:40px 0 20px}}.lates-title{position:relative;margin-bottom:80px;font-size:14px;line-height:24px;letter-spacing:1px;text-transform:uppercase;font-weight:normal;text-align:center}.lates-title:after,.lates-title:before{content:"";display:block;position:absolute;top:50%;transform:translateY(-50%);height:1px;background:#e6eef0}.lates-title:after{width:calc(50% - 90px);left:0}.lates-title:before{width:calc(50% - 90px);right:0}@media only screen and (max-width: 768px){.lates-title{margin-bottom:40px}.lates-title:after,.lates-title:before{width:calc(50% - 70px)}}.page-title-box{padding:80px 0;border-top:1px solid #e6eef0}.page-title-box .page-title{font-size:57px;line-height:70px;margin:0}@media only screen and (max-width: 576px){.page-title-box{padding:40px 0}.page-title-box .page-title{font-size:47px;line-height:53px}}.page__head .page-image{background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#e6eef0}.page__head .page-image:after{content:"";display:table;width:100%;min-height:300px;padding-top:50%}.page{margin:80px auto}.page img{margin:30px 0}@media only screen and (max-width: 768px){.page{margin:40px auto}}.page-box{text-align:center}.page-box .back-arrow a{display:inline-block;margin-left:10px;color:#393e46;font-weight:700}.page-box .back-arrow a:hover{color:#000}.article{margin-bottom:40px}.article .article__wrapper{display:flex;align-items:center}.article .article__image{width:50%;display:block;background-position:center;background-size:cover;background-repeat:no-repeat;background-color:#e6eef0}.article .article__image:hover{opacity:0.9}.article .article__image:after{content:"";display:table;width:100%;padding-bottom:70%}.article .article__content{width:60%;padding:50px;margin-left:-10%;z-index:1;border-radius:3px;background:rgba(255,255,255,0.98);box-shadow:0 1px 4px rgba(0,0,0,0.15)}.article .article__content .article__tag{font-size:12px;letter-spacing:0.5px;font-weight:700;text-transform:uppercase}.article .article__content .article__title{margin-bottom:20px;font-size:30px}.article .article__content .article__title a{color:#393e46}.article .article__content .article__title a:hover{color:#000}.article .article__content .article__excerpt{margin-bottom:20px;font-size:16px;line-height:26px}.article .article__content .article__meta{font-size:12px;line-height:18px;text-transform:uppercase;color:#bbb}.article .article__content .article__footer{display:flex;align-items:center}.article .article__content .article__footer .read-more{margin-left:auto;padding-bottom:5px;font-size:12px;line-height:18px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid transparent;color:#bbb}.article .article__content .article__footer .read-more:hover{color:#393e46;border-color:#f6b141}.article .article-without-image{width:100%;margin-left:auto}@media only screen and (max-width: 768px){.article .article__wrapper{flex-direction:column}.article .article__image{width:100%}.article .article__content{width:90%;padding:20px;margin:-10% 0 0 0}.article .article-without-image{width:90%;margin:0}}@media only screen and (max-width: 576px){.article .article__content .article__title{font-size:27px}}.post-title-box{padding:80px 0;border-top:1px solid #e6eef0}.post-title-box .post-title{margin-bottom:10px;width:500px;max-width:100%;font-size:57px;line-height:70px}.post-title-box .post__date{font-weight:700}@media only screen and (max-width: 576px){.post-title-box{padding:40px 0}.post-title-box .post-title{margin:10px 0;font-size:47px;line-height:53px}}.post__info{display:flex;align-items:center}.post__info .post__author{margin-right:10px;font-weight:700}.post__info .post__author .author-name{color:#bbb;border-bottom:1px solid transparent}.post__info .post__author .author-name:hover{border-bottom:1px solid #bbb}.post__info .post__tags .post__tags-tag{position:relative;padding-left:15px;font-weight:700}.post__info .post__tags .post__tags-tag:before{content:"";position:absolute;top:50%;left:0;transform:translateY(-50%);width:5px;height:5px;border-radius:50%;background:#393e46}.post-image{background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#e6eef0}.post-image:after{content:"";display:table;width:100%;min-height:300px;padding-top:50%}.post{margin:80px auto}.post.post-no-image{margin:0 auto 80px}@media only screen and (max-width: 576px){.post{margin:40px auto}.post.post-no-image{margin:0 auto 40px}}.post img{margin:30px 0}.post__content{margin-bottom:40px}.post__share{display:flex}.post__share .share__title{margin-right:10px;font-size:18px;font-weight:700;letter-spacing:0.5px}.post__share .share__list .share__item{display:inline-block;margin:0 10px}.post__share .share__list .share__item a{font-size:18px;color:#bbb}.post__share .share__list .share__item a:hover{color:#393e46}.post__navigation{display:flex;align-items:baseline;margin-bottom:80px;padding-bottom:80px;border-bottom:1px solid #e6eef0}.post__navigation .prev,.post__navigation .next{flex:1 0 50%}.post__navigation .prev:last-child,.post__navigation .next:last-child{padding-right:0}.post__navigation .prev .post__nav__image,.post__navigation .next .post__nav__image{display:block;margin-bottom:40px;background-position:center;background-size:cover;background-repeat:no-repeat;background-color:#e6eef0;transition:.35s ease-in-out}.post__navigation .prev .post__nav__image:hover,.post__navigation .next .post__nav__image:hover{opacity:0.9}.post__navigation .prev .post__nav__image:after,.post__navigation .next .post__nav__image:after{content:"";display:table;width:100%;padding-bottom:65%}.post__navigation .prev .post__nav__title,.post__navigation .next .post__nav__title{margin-bottom:20px;font-size:27px;line-height:37px;text-transform:uppercase;letter-spacing:2px;text-align:center}.post__navigation .prev .post__nav__title a,.post__navigation .next .post__nav__title a{display:inline-block;max-width:250px;padding:0 10px;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#393e46}.post__navigation .prev .post__nav__title a:hover,.post__navigation .next .post__nav__title a:hover{color:#000}.post__navigation .prev{padding-right:10px}.post__navigation .next{padding-left:10px}.post__navigation .prev__excerpt,.post__navigation .next__excerpt{width:100%;max-width:400px;margin:0 auto;text-align:center}@media only screen and (max-width: 768px){.post__navigation{flex-wrap:wrap}.post__navigation .prev,.post__navigation .next{flex:1 0 100%;padding:0}.post__navigation .next{margin-top:40px}}@media only screen and (max-width: 576px){.post__navigation{margin-bottom:40px;padding-bottom:40px}.post__navigation .prev .post__nav__image,.post__navigation .next .post__nav__image{margin-bottom:20px}}.comments{margin-bottom:80px}@media only screen and (max-width: 576px){.comments{margin-bottom:40px}}.arhive-head{padding:80px 0;margin-bottom:40px;background:#f5f5f5}.arhive-head .archive-title{text-align:center;font-weight:normal}.arhive-head .archive-title span{font-weight:700}@media only screen and (max-width: 576px){.arhive-head{margin-bottom:40px}}
+
+  </style>
+</head>
+
+<body>
+  
+  
+
+  <div class="container">
+  <div class="row">
+    <div class="col col-12">
+      <!-- begin header -->
+      <header class="header">
+
+        <div class="logo">
+          <a class="logo__link" href="/">
+          
+            <img class="logo__image" src="/images/logo_black.png" alt="DongqiShen">
+          
+          </a>
+        </div>
+
+        <nav class="main-nav">
+
+          <div class="main-nav__box">
+            <div class="nav-icon__close">
+              <i class="ion ion-ios-close-circle-outline"></i>
+            </div>
+
+            <div class="nav__title">Menu</div>
+
+            <ul class="nav__list list-reset">
+              <li class="nav__item">
+                <a href="/" class="nav__link">Home</a>
+              </li>
+              
+                
+              
+                
+              
+              <li class="nav__item">
+                <a href="/about/" class="nav__link">About</a>
+              </li>
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+                
+              
+            </ul>
+
+          </div>
+        </nav>
+
+        <div class="nav-buttons">
+          <i class="nav__icon nav__icon-menu ion ion-md-menu" aria-label="Menu Icon"></i>
+          <i class="nav__icon nav__icon-search ion ion-md-search" aria-label="Search Icon"></i>
+        </div>
+
+        <div class="header__overlay"></div>
+      </header>
+      <!-- end header -->
+    </div>
+  </div>
+</div>
+  
+  
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+ 
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$', '$$'], ["\\[","\\]"] ],
+    processEscapes: true
+  }
+});
+</script>
+ 
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+  
+  <!-- begin content -->
+  <main class="content" aria-label="Content">
+    <div class="container">
+  <div class="post-title-box">
+    <div class="row">
+      <div class="col col-10 push-2 col-11 push-t-1 col-m-12 push-m-0">
+        <span class="post__date">
+          <time datetime="2021-01-15T22:00:00+08:00">Jan 15, 2021</time>
+        </span>
+
+        <h1 class="post-title">SVM_1：可学习理论</h1>
+
+        <div class="post__info">
+          <div class="post__author">
+            <span>By</span>
+            <a href="/about/" class="author-name">Dongqi Shen</a>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+    <div class="post__head">
+      <div class="post-image" style="background-image: url(/images/svm.png)"></div>
+    </div>
+  
+
+  </div>
+
+
+  <div class="container">
+  <div class="row">
+    <!-- begin post -->
+    <article class="post  col col-8 col-t-10 col-m-12">
+
+      <div class="post__content">
+        <h1 id="svm_1-从-hoeffding不等式-到-vc维">SVM_1: 从 Hoeffding不等式 到 VC维</h1>
+<p>不知道这么说正不正确，私以为SVM在机器学习中有着完美的数学理论解释，就像贝叶斯定理，拥有一套完整的数学理论框架。深层神经网络在当下很是流行，但它的缺点是缺乏可解释性。虽然SVM目前已很少应用，但是依赖它完备的数学理论使得它依然在机器学习中占有一席之地。况且，谁能知道在未来的哪个阶段，也许以SVM为代表的传统机器学习算法又能迎来新的一春呢？<br />
+我打算把SVM的读书笔记写成一个系列，具体有多少章，现在的我也答不上来。在我看来，SVM是入门机器学习最好的学习路径，因为他有很强的数学理论证明，这些都是机器学习的基本知识。本章笔记的命名就很有理论性，可能很多机器学习算法从业者都没有听说个这两个概念，因为大多数教程都直接从算法入手，而忽略了机器学习的基本理论支撑，这一章就是从Hoeffding出发，为什么机器学习是有效的。</p>
+<h2 id="引入hoeffding不等式">引入Hoeffding不等式</h2>
+<p>通常我们所知的机器学习就是给你一个样本数据集，然后选择模型，训练，调参，最终得到一个训练好的结果（模型），用这个结果去预测未知的数据。可能绝大多人认为这是一气呵成，理所当然的，但是有没有想过这个因果关系存在的原因是什么？为什么从样本数据集上得出的结果能够表示全局数据。可学习性就是来回答这样一个问题。<br />
+学习的目的就是找到目标函数（模型）f，但是我们并不知道这个目标函数，我们已知的只有有限的样本集，并且希望从这有限的样本集中找到目标函数f，或者找不到（99.9%都找不到）而去找一个非常接近f的函数，这是机器学习最大的难点，从有限的数据中找无限数据的规律。<br />
+我们先从一个简单的例子入手，假设有个垃圾桶，桶内放置了红色和绿色的玻璃珠，μ（未知）表示红色珠子的概率，相对应1-μ表示拿到绿色珠子的概率。现在我们从垃圾桶中有放回得拿取一些珠子（样本），用v（已知）表示样本中红色珠子的比例。那么，我们能从v告诉了我们哪些关于μ的信息呢？为了用v来表示μ，引入一个简单的边界，Hoeffding Inequality。<br />
+\(\begin{equation}P[|v-μ| &gt; \epsilon]\le 2e^{-2ε^{2}N} \ for \ any\ ε &gt; 0\end{equation}\)<br />
+这里的P[.]表示一件事的可能性，这里取决与我们选取的随机样本。用文字表述这个不等式就是随着样本数量N的增长，v偏离μ以指数级的速度收敛在容忍值ε内。如果为了让v去逼近μ，可以设置ε为非常小的数，这样子的话就需要一个很大的样本数量N。关于Hoeffding不等式是来自大数定理的一个结论，可以看作是客观存在的整理，我们只是拿来使用而不去证明它。</p>
+<h2 id="可学习性边界">可学习性边界</h2>
+<p>机器学习的目的就是找到一个objective function f: x-&gt;y. 我们先定义一个假设集H，样本数据集D。从假设集H中选取一个特定的假设h，首先计算在数据集D上的样本误差（in-sample error）
+\(E_{in}(h) = \frac{1}{N}\sum_{n=1}^{N}{[h(X_n)\neq f(X_n)]}\)
+其次是样本外误差(out-of-sample error)
+\(E_{out}(h) = P[h(x) \neq f(x)]\)
+把他们带入上述的Hoeffding不等是，可以重写如下
+\(P[|E_{in}(h)-E_{out}(h)| &gt; ε]\leq 2e^{-2ε^{2}N} \ for \ any\ ε &gt; 0\)
+其中的h代表一个特定的假设集，但是在假设空间上存在着M个假设集，我们的目标是把这M个假设集都考虑进去。为了说明，我们先引入一个显而易见成立的不等式。假设$B_1,B_2,…,B_M$是一系列事件，那么
+\(P[B_1\ or\ B_2\ or\ ... B_M] \leq P[B_1] + P[B_2] + ...P[B_M]\)
+如果每个事件之间有很大的重合，右边明显比左边大，如果每一个事件都不重合，则等号成立。将这个不等式应用于M个假设，则有
+\(P[|E_{in}(g) - E_{out}(g)| &gt; ε] \leq P[|E_{in}(h_1) - E_{out}(h_1)| &gt; ε  \\
+                                       or \ |E_{in}(h_2) - E_{out}(h_2)| &gt; ε \  or \ ...\\
+                                       or \  |E_{in}(h_M) - E_{out}(h_M)|&gt; ε ]
+                                     \leq \sum_{m=1}^{M}{P|E_{in}(h_m) - E_{out}(h_m)| &gt; ε}]\)
+根据前面的不等式，我们可以用M个边界来替代，由此可以得出
+\(P[|E_{in}(g) - E_{out}(g)| &gt; ε] \leq 2Me^{-2ε^{2}N}\)
+这个不等式就是关于整个假设集的上界，其中g表示我们最终选择的假设。可以看出，这是一个相当松弛的边界，不等式的左边是一个假设，而不等式的右边是关于整个假设集上界，并且只有在M是有限的时候这个不等式才有意义。</p>
+<h2 id="泛化理论">泛化理论</h2>
+<p>泛化更通俗一点的解释就是通用。一般的机器学习任务，都是从<strong>一个</strong>数据集上训练，找出合适的数学模型，并用这个模型去预测接下来出现的无穷无尽的新的数据，这是模型的泛化。但是这里的泛化理论指的是从<strong>多个、不同的</strong>数据集训练出来的模型，是否都能达到这样的效果。试想一下，样本数据是从一个特定分布（要拟合的函数f）上获取的，因此样本数据的分布存在不确定性，比方说全国人民身高，从北方获取的数据，或者从南方获取的数据训练出来的模型显然是不同的，但是这个利用这个带有偏见的模型去预测全国人民的身高，它的误差是否在一个可控范围内（确定边界），这是需要数学去证明的。
+可学习性边界利用到了Hoeffding不等式，再一次写出来，如下
+\(P[|E_{in}(g) - E_{out}(g)| &gt; ε] \leq 2Me^{-2ε^{2}N}\)
+可以把它右边的值用δ表示，通过等式变换得出ε的表达式
+\(ε = \sqrt{\frac{1}{2N}\ln(\frac{2M}{δ}})\)
+再把P里面的的表达式取出来，可得
+\(E_{in} \leq E_{out} + \sqrt{\frac{1}{2N}\ln(\frac{2M}{δ}})\)
+现在还是回到M的问题。M代表的是假设集的数量，但是有时候它很难被测量，并且经常是无限的，因此下一步要做的就是用一个有限的值代替M，这会涉及到很多名词的定义。
+<strong>Dichotomies</strong> $x_{1}, x_{2}, …, x_{N}$是从分布X上选取的N个样本点，二分是指假设集能在这N个样本点的样本集上产生所有的分类。无论N个点怎么取，只要存在N个点满足这个要求，就算是二分。
+<strong>growth function</strong> 增长函数指的是假设集对于N个点最多能产生多少种划分，记为$m_{H}(N)$。
+<strong>break point</strong> 如果k个点不能被假设集二分，则k是假设集H的一个断点
+这些都是在<strong>二分类</strong>基础上的定义，多分类也适用，但是证明更加复杂。根据二分的定义，N个点所产生的所有可能的分类有$2^N$种，增长函数满足$m_{H}(N) \leq 2^N$。很容易得出，在二维坐标系中，二维感知机的增长函数是3。可以这么解释，存在三个点，感知机能产生所有8个种类的划分，但是对于四个点，无论怎么摆放，最多只能产生14种可能的划分，因此，$m_{H}(3)=8,m_{H}(4)=14$。可以看出$m_{H} &lt; 2^k$。断点的意义在于，一旦找到最小的一个断点，对于任何一个大的样本集数量N，增长函数的能够在<strong>多项式</strong>上收敛，这是最终要的一点。这样我们可以用一个多项式商界的增长函数代替N。证明有点复杂，我放弃了（哈哈哈）。</p>
+<h2 id="vc维">VC维</h2>
+<p>终于到了最后一个知识点了。
+<strong>VC维</strong> 对于一个假设集H，能使$m_{H} = 2^N$成立的最大的N的值,用$d_{vc}$表示。
+显而易见，vc维+1是最小的断点，满足$k = d_{vc} + 1$，如果对于所有的N，都满足$m_{H} = 2^N$，那么这个假设集的vc维是无限的。因此，前面的未经证明的结论，可以用下面的公式表示
+\(m_{H}(N) \leq N^{d_{vc}} + 1\)
+因此，可以通过vc维的多项式表示增长函数的上界。我们最终的目的是希望代替可学习型边界中的M，因为M的值往往是无穷大的。增长函数不能直接代替M，但是通过对增长函数的一些修改就能达到这个目的。这个过程也存在严谨的数学理论推导，我看了几遍，没记住，还是只记住结论吧，最后得出的公式是：
+\(E_{out}\leq E_{in}(g) + \sqrt{\frac{1}{N}\ln \frac{4m_{H}(2N)}{δ}}\)
+简单分析一下右边根号内的情况，可以分为两个函数$y_{1} = x$，$y_2 = \ln m_{H}(x)$，其中$m_{H}$是多项式，显然随着x增加，$y_{1}$比$y_2{2}$增长得更快，在坐标轴上表示的话，$y_{1}$一直在$y_{2}$上面。因此根号内的值随着N的增大，一直在缩小。这就意味着，如果有<strong>足够多的数据</strong>，有限假设集中的每一个拥有有限vc维的假设，都能很好得拟合目标函数。到这里就解释了为什么机器学习算法需要很多数据的理论证明。</p>
+<h2 id="尾声">尾声</h2>
+<p>其实这个结论在实际应用上很少用到，因为这是一个相当宽松的上界，但它的意义就在于从数学理论方面解释了机器学习的可学习性。整个证明过程其实就是找有限边界的过程，并且要让这个边界能够支撑一个理论，那就是从有限的数据集上找到一个函数用来逼近产生这个数据集的函数，这个边界就是误差。不过在整个过程中都没有提及假设集的选择问题，这就涉及到了另外一个理论bias and variance。在寻找边界的过程中，首先使用到了假设集的数量，但是这个值很大并且可能是无穷大的，接着就希望找一个函数来代替这个值，这就有了增长函数。通过一系列的数学证明，增长函数是一个多项式，这是非常重要的一个特性。用增长函数替代假设集数量后（有一些变化），得出一个重要的结论，就是只要有足够多的数据，就能够尽可能逼近函数f。</p>
+
+<h3 id="参考资料">参考资料</h3>
+<p>[1] Learning From Data: A short course</p>
+
+      </div>
+
+      <div class="post__share">
+        <span class="share__title">Share this article:</span>
+        <ul class="share__list list-reset">
+          <li class="share__item">
+            <a class="share__facebook" href="https://www.facebook.com/sharer/sharer.php?u=/2021/01/15/SVM_1-%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/"
+              onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+              title="Share on Facebook" rel="nofollow"><i class="ion ion-logo-facebook"></i></a>
+          </li>
+
+          <li class="share__item">
+            <a class="share__twitter" href="https://twitter.com/intent/tweet?text=SVM_1:%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA&url=/2021/01/15/SVM_1-%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/"
+              onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;"
+              title="Share on Twitter" rel="nofollow"><i class="ion ion-logo-twitter"></i></a>
+          </li>
+
+          <li class="share__item">
+            <a class="share__linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=/2021/01/15/SVM_1-%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/&title=SVM_1:%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA&summary=&source="
+              onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="Share on LinkedIn" rel="nofollow"><i class="ion ion-logo-linkedin"></i></a>
+          </li>
+
+          <li class="share__item">
+            <a class="share__pinterest" href="http://pinterest.com/pin/create/button/?url=/2021/01/15/SVM_1-%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA/&amp;media=/images/svm.png&amp;description=SVM_1:%E5%8F%AF%E5%AD%A6%E4%B9%A0%E7%90%86%E8%AE%BA"
+              onclick="window.open(this.href, 'pop-up', 'left=20,top=20,width=900,height=500,toolbar=1,resizable=0'); return false;" title="Share on Pinterest"
+              rel="nofollow"><i class="ion ion-logo-pinterest"></i></a>
+          </li>
+        </ul>
+      </div>
+    </article>
+    <!-- end post -->
+    </div>
+  </div>
+
+  <div class="container">
+  <div class="post__navigation">
+    
+    <div class="prev">
+      <a class="post__nav__image" href="/2021/01/01/2020-%E6%9B%B2%E6%8A%98%E5%89%8D%E8%A1%8C/" style="background-image: url(/images/2020_end_xiamen.jpg)"></a>
+      <h2 class="post__nav__title">
+        <i class="ion ion-md-arrow-back"></i>
+        <a href="/2021/01/01/2020-%E6%9B%B2%E6%8A%98%E5%89%8D%E8%A1%8C/">2020 曲折前行</a>
+      </h2>
+      <p class="prev__excerpt">
+        
+          大约在一个月以前吧，就决定开始记录生活，当时只是有个模糊的概念，写技术文档，写生活感受，最好还有每次旅行的记录，一方面呢，是不想日子一天天过去，回首往事却是一片空白，另一方面呢，表达似乎是我目前最欠缺的能力，有话说...
+        
+      </p>
+    </div>
+    
+
+    
+  </div>
+
+   <!-- begin comments -->
+<div class="comments">
+  <div id="disqus_thread"></div>
+  <script>
+    (function () {
+      var d = document, s = d.createElement('script');
+      s.src = '//mr-brown.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </noscript>
+</div>
+<!-- end comments --> 
+  </div>
+
+  </main>
+  <!-- end content -->
+
+  <div class="top ion ion-ios-arrow-up" title="Top"></div>
+
+  <!-- begin search -->
+<div class="search">
+  <div class="container">
+    <div class="row">
+      <div class="col col-12">
+        <div class="search__box">
+          <div class="search__group">
+            <div class="search__close">
+              <i class="ion ion-ios-close-circle-outline"></i>
+            </div>
+            <label for="js-search-input" class="screen-reader-text">Search for Blog</label>
+            <input type="text" id="js-search-input" class="search__text" autocomplete="off" placeholder="Type to search">
+          </div>
+          <ul id="js-results-container" class="search-results-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end search -->
+
+  <!-- begin footer -->
+<footer class="footer">
+  <div class="container">
+  <!--
+     
+
+    
+    
+    
+
+    <div class="contact">
+  <ul class="contact__list list-reset">
+    
+      <li><a href="https://twitter.com/"><i class="ion ion-logo-twitter"></i></a></li>
+    
+
+    
+      <li><a href="https://facebook.com/"><i class="ion ion-logo-facebook"></i></a></li>
+    
+  
+    
+      <li><a href="https://dribbble.com/"><i class="ion ion-logo-dribbble"></i></a></li>
+    
+  
+    
+      <li><a href="https://instagram.com/"><i class="ion ion-logo-instagram"></i></a></li>
+    
+  
+    
+      <li><a href="https://pinterest.com/"><i class="ion ion-logo-pinterest"></i></a></li>
+    
+  </ul>
+</div>
+  -->
+
+    <div class="copyright">Copyright &copy; 2021 <a href="/">DongqiShen</a> — All right Reserved. Powered by <a href="https://jekyllrb.com/">Jekyll</a>.</div>
+</div>
+</footer>
+<!-- end footer -->
+
+
+  <script src="/js/vendors/jquery-3.3.1.min.js"></script>
+<script src="/js/vendors/simple-jekyll-search.min.js"></script>
+<script>
+  SimpleJekyllSearch({
+    searchInput: document.getElementById("js-search-input"),
+    resultsContainer: document.getElementById("js-results-container"),
+    json: "/search.json",
+    searchResultTemplate: '<li class="search-results__item"><a class="search-results__link" href="{url}">{title}</a><br> <span class="search-results__date">{date}</span></li>',
+    noResultsText: '<li class="no-results">No results found</li>'
+  });
+</script>
+<script src="/js/vendors/transition.js"></script>
+<script src="/js/vendors/zoom.min.js"></script>
+<script src="/js/vendors/instafeed.min.js"></script>
+<script src="/js/vendors/jquery.fitvids.js"></script>
+<script src="/js/common.js"></script>
+</body>
+
+</html>
